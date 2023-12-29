@@ -1,4 +1,6 @@
+import pyautogui
 import pyttsx3
+import requests
 import speech_recognition as sr
 import datetime
 import os
@@ -11,6 +13,7 @@ import smtplib
 import sys
 import time
 import pyjokes
+import requests
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -60,6 +63,22 @@ def sendEmail(to, content):
     server.starttls()
     server.login("kaushikdakua05@gmail.com", "Lipu5122002")
     server.sendmail("kaushikdakua05@gmail.com", to, content)
+
+def news():
+    main_url = "https://newsapi.org/v2/top-headlines?country=in&apiKey=c945bc2748714212834e7ebd5cc4eb31"
+
+    main_page = requests.get(main_url).json()
+    #print(main page)
+    articles = main_page["articles"]
+    #print articles
+    head = []
+    day = ["first","second","third","fourth","fifth","sixth","seventh","eighth","ninth","tenth"]
+    for ar in articles:
+        head.append(ar["title"])
+    for i in range (len(day)):
+        speak(f"today's {day[i]} news is: {head[i]}")
+
+
 
 if __name__ == "__main__":
     wish()
@@ -160,6 +179,20 @@ if __name__ == "__main__":
 
         elif "sleep the system" in query:
             os.system("rundll32.exe powerprof.dll,SetSuspendState 0,1,0")
-        #speak("Sir do you have any other work for me!")
 
 
+###########################################################################################################
+        #switch the window
+        elif "switch the window" in query:
+            pyautogui.keyDown("alt")
+            pyautogui.press("tab")
+            time.sleep(1)
+            pyautogui.keyUp("alt")
+
+        #news telling
+        elif "tell me news" in query:
+            speak("please wait, fetching the latest top ten news reports")
+            news()
+
+
+        speak("Sir do you have any other work for me!")
