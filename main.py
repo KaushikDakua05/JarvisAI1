@@ -14,6 +14,7 @@ import sys
 import time
 import pyjokes
 import requests
+import instaloader
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -194,5 +195,45 @@ if __name__ == "__main__":
             speak("please wait, fetching the latest top ten news reports")
             news()
 
+        #to find the location using ip address
+        elif "where am i" in query or "where are we" in query:
+            speak("wait sir, let me check")
+            try:
+                ipAdd = requests.get('https://api.ipify.org').text
+                print(ipAdd)
+                url = 'https://get.geojs.io/v1/ip/geo/'+ipAdd+'.json'
+                geo_requests = requests.get(url)
+                geo_data = geo_requests.json()
+                city = geo_data['city']
+                state = geo_data['state']
+                country = geo_data['country']
+                speak(f"sir i am not sure, but  i think  we are in {city} city of {country} country")
+            except Exception as e:
+                speak("Sorry sir, due to internet issue i couldn't able to find the location")
+                pass
 
+        #---to check instagram profile
+        elif "instagram profile" in query or "profile on instagram" in query:
+            speak("sir, please enter the username correctly.")
+            name = input("Enter your username")
+            webbrowser.open(f"www.instagram.com/{name}")
+            speak(f"Sir here is the profile of the user {name}")
+            time.sleep(5)
+            speak("sir would you like to download your profile picture of this account")
+            condition = takecommand().lower()
+            if "yes" in condition:
+                mod = instaloader.Instaloader()
+                mod.download_profile(name, profile_pic_only=True)
+                speak("i am done sir, profile picture is saved in our main folder. Now i am ready for your next command")
+            else:
+                pass
+        #---to take screenshot
+        elif "take screenshot" in query or "take a screenshot" in query:
+            speak("sir please tell me the name of the screenshot file")
+            name = takecommand().lower()
+            speak("please sir hold the screen for few seconds, i am taking screenshot")
+            time.sleep(3)
+        img = pyautogui.screenshot()
+        img.save(f"{name}.png")
+        speak("i am done sir, the screenshot is saved in our main folder.")
         speak("Sir do you have any other work for me!")
