@@ -13,8 +13,9 @@ import smtplib
 import sys
 import time
 import pyjokes
-import requests
+# import requests
 import instaloader
+import PyPDF2
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -79,11 +80,19 @@ def news():
     for i in range (len(day)):
         speak(f"today's {day[i]} news is: {head[i]}")
 
+def pdf_reader():
+    book = open('hello.pdf','rb')
+    pdfReader = PyPDF2.PdfFileReader(book)
+    pages = pdfReader.numPages
+    speak(f"total number of pages the book is {pages}")
+    speak("sir please enter the page number i have to read")
+    pg = int(input("please enter the page number: "))
+    page = pdfReader.getPage(pg)
+    text = page.extractText()
+    speak(text)
 
-
-if __name__ == "__main__":
+def start():
     wish()
-
     while True:
     # if 1:
 
@@ -139,8 +148,8 @@ if __name__ == "__main__":
         elif "email to kaushik" in query:
             try:
                 speak("what should i say?")
-                content = takecommand().lower()
                 to = "kaushikdakua5@gmail.com"
+                content = takecommand().lower()
                 sendEmail(to, content)
                 speak("email has been send")
             except Exception as e:
@@ -148,7 +157,7 @@ if __name__ == "__main__":
                 speak("sorry sir, i am unable to send the mail to the user")
 
         elif "no thank you" in query:
-            speak("Thank you using me and have good day sir...")
+            speak("Thank you using me and it's a pleasure to work with you...")
             sys.exit()
 
         # to close youtube
@@ -196,7 +205,7 @@ if __name__ == "__main__":
             news()
 
         #to find the location using ip address
-        elif "where am i" in query or "where are we" in query:
+        elif "where am i" in query or "where i am" in query or "where are we" in query or "where we are" in query:
             speak("wait sir, let me check")
             try:
                 ipAdd = requests.get('https://api.ipify.org').text
@@ -236,4 +245,28 @@ if __name__ == "__main__":
             img = pyautogui.screenshot()
             img.save(f"{name}.png")
             speak("i am done sir, the screenshot is saved in our main folder.")
+
+        #-------read pdf
+        elif "read pdf" in query:
+            pdf_reader()
+
+
+        #-----------hide files and folder ------------
+        elif "hide all files" in query or "hide this folder" in query or "visible for everyone" in query:
+            speak("sir please tell me you want to hide this folder or make it visible for everyone")
+            condition = takecommand().lower()
+            if "hide" in condition:
+                os.system("attrib +h /s /d")
+                speak("sir, all the files in the folder are hidden")
+
+            elif "visible" in condition:
+                os.system("attrib -h /s /d")
+                speak("sir, all the files in the folder are noe visible to everyone")
+
+            elif "leave it" in condition or "leave for now" in condition:
+                speak("ok sir")
+
         speak("Sir do you have any other work for me!")
+if __name__ == "__main__":
+    start()
+
