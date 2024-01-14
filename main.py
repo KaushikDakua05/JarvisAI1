@@ -49,13 +49,15 @@ def takecommand():
 #to wish
 def wish():
     hour = int(datetime.datetime.now().hour)
-
+    h = datetime.datetime.now().hour
+    m = datetime.datetime.now().minute
+    t = str(h)+":"+str(m)
     if hour>=0 and hour<12:
-        speak("good morning")
+        speak(f"good morning,it's {t}")
     elif hour>=12 and hour<18:
-        speak("Good afternoon")
+        speak(f"good afternoon,it's {t}")
     else:
-        speak("good evening")
+        speak(f"good evening,it's {t}")
     speak("I am Jarvis. Please tell me how can i help you?")
 
 #to send email
