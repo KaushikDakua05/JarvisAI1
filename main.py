@@ -13,7 +13,6 @@ import smtplib
 import sys
 import time
 import pyjokes
-# import requests
 import instaloader
 import PyPDF2
 
@@ -32,9 +31,10 @@ def speak(audio):
 def takecommand():
     r=sr.Recognizer()
     with sr.Microphone() as source:
+        speak("listening")
         print("Listening...")
         r.pause_threshold = 1
-        audio = r.listen(source, timeout=2, phrase_time_limit=5)
+        audio = r.listen(source, timeout=5, phrase_time_limit=5)
 
     try:
         print("Recognizing...")
